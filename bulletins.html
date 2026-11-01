@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulletin Board — Prism</title>
+<meta name="description" content="The official noticeboard for Prism, a Finder-style graphical desktop shell for the TRS-80 Color Computer 3: dated project bulletins, newest first.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 L28 26 L4 26 Z' fill='none' stroke='%2335b6c9' stroke-width='2.5'/%3E%3Cpath d='M16 4 L16 26 L4 26 Z' fill='%23f2a81d' opacity='0.85'/%3E%3C/svg%3E">
+<!--
+  PRISM — bulletin board (preview build, not yet published)
+  Future links, to be wired up when the project goes public:
+    GitHub repository  : https://github.com/PLACEHOLDER/prism-coco3   (placeholder — does not exist yet)
+    Releases           : https://github.com/PLACEHOLDER/prism-coco3/releases   (placeholder — does not exist yet)
+    GitHub Discussions : https://github.com/PLACEHOLDER/prism-coco3/discussions   (placeholder — does not exist yet)
+  Do not turn these into live links until the repository is real.
+-->
+<style>
+  :root{
+    --ground:#0a0f14;
+    --ground-2:#0e151c;
+    --panel:#111a22;
+    --panel-2:#152029;
+    --line:#22303c;
+    --ink:#e9eff3;
+    --muted:#9db2bd;
+    --faint:#6d828f;
+    --teal:#35b6c9;
+    --teal-bright:#6fd3e4;
+    --amber:#f2a81d;
+    --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--font);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--teal);color:#06222a}
+  a{color:var(--teal-bright);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+
+  /* ---------- header ---------- */
+  header.site{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,15,20,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .site-inner{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+  .brand{display:flex;align-items:center;gap:11px;color:var(--ink);font-weight:700;letter-spacing:.14em;font-size:15px}
+  .brand:hover{text-decoration:none}
+  .brand svg{display:block}
+  .brand .ver{font-family:var(--mono);font-weight:400;letter-spacing:0;font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:20px;padding:2px 9px;margin-left:4px}
+  nav.main{margin-left:auto;display:flex;gap:26px;font-size:14.5px}
+  nav.main a{color:var(--muted)}
+  nav.main a:hover{color:var(--ink);text-decoration:none}
+  nav.main a.here{color:var(--ink);border-bottom:2px solid var(--amber);padding-bottom:2px}
+
+  /* ---------- page head ---------- */
+  .page-head{padding-top:72px;padding-bottom:6px}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";display:inline-block;width:26px;height:1px;background:var(--teal);vertical-align:middle;margin-right:12px}
+  h1.board-title{font-size:clamp(38px,6vw,58px);font-weight:800;letter-spacing:-.01em;line-height:1.05;margin-bottom:16px}
+  h1.board-title .facet{color:var(--teal)}
+  .lede{font-size:19px;color:var(--muted);max-width:820px;font-weight:300}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  /* ---------- sections ---------- */
+  section.block{padding-top:64px;padding-bottom:8px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:34px}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--amber);letter-spacing:.15em}
+  h2{font-size:clamp(30px,4.4vw,42px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sec-head{border-bottom:1px solid var(--line);padding-bottom:20px}
+
+  /* ---------- the board ---------- */
+  .board{display:flex;flex-direction:column;gap:26px;max-width:900px}
+  .bulletin{
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:34px 38px 28px;
+  }
+  .bulletin::before{
+    /* the pushpin — the board's one wink */
+    content:"";position:absolute;top:-8px;left:38px;width:16px;height:16px;border-radius:50%;
+    background:var(--teal);border:2px solid var(--ground);
+  }
+  .board .bulletin:nth-child(even)::before{background:var(--amber)}
+  .bulletin .b-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+  .bulletin .date{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);
+  }
+  .bulletin .latest{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);border:1px solid rgba(53,182,201,.45);border-radius:20px;padding:2px 10px;
+  }
+  .bulletin h3{font-size:clamp(21px,3vw,26px);font-weight:700;line-height:1.25;margin-bottom:10px}
+  .bulletin p{color:var(--muted);margin-bottom:12px;max-width:760px}
+  .bulletin p:last-child{margin-bottom:0}
+  .bulletin p b{color:var(--ink);font-weight:600}
+  .bulletin code{font-family:var(--mono);font-size:.92em;color:var(--teal-bright)}
+
+  /* ---------- how this board works ---------- */
+  .how{
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:38px 40px;max-width:900px;
+  }
+  .how h3{font-size:21px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+  .how p{color:var(--muted);margin-bottom:12px;max-width:760px}
+  .how p:last-child{margin-bottom:0}
+  .how p b{color:var(--ink);font-weight:600}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.t{background:var(--teal)} .dot.a{background:var(--amber)}
+
+  /* ---------- footer ---------- */
+  footer.site{margin-top:100px;border-top:1px solid var(--line);background:var(--ground-2)}
+  .foot{padding-top:52px;padding-bottom:60px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
+  .foot .credit{font-size:17px;line-height:1.6;max-width:520px}
+  .foot .credit b{color:var(--teal-bright);font-weight:600}
+  .foot .fine{font-size:13.5px;color:var(--faint);line-height:1.7}
+  .foot .fine p{margin-bottom:10px}
+
+  @media (max-width:880px){
+    .foot{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    body{font-size:16px}
+    .page-head{padding-top:48px}
+    nav.main{display:none}
+    section.block{padding-top:48px;padding-bottom:4px}
+    .bulletin{padding:28px 24px 22px}
+    .bulletin::before{left:24px}
+    .how{padding:30px 24px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap site-inner">
+    <a class="brand" href="index.html" aria-label="Prism home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#35b6c9" stroke-width="2.5"/><path d="M16 4 L16 26 L4 26 Z" fill="#f2a81d" opacity="0.85"/></svg>
+      PRISM <span class="ver">v0.2</span>
+    </a>
+    <nav class="main">
+      <a href="index.html#story">Story</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#screenshots">Screenshots</a>
+      <a href="index.html#requirements">Requirements</a>
+      <a href="index.html#download">Download</a>
+      <a href="bulletins.html" class="here" aria-current="page">Bulletin Board</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ BOARD HEAD ============ -->
+  <div class="wrap page-head">
+    <p class="eyebrow">The project noticeboard</p>
+    <h1 class="board-title">Bulletin <span class="facet">Board</span></h1>
+    <p class="lede">Prism’s official noticeboard: <strong>every release, fix and milestone, dated and on the record</strong> — newest first. If it happened to the project, it gets pinned here.</p>
+  </div>
+
+  <!-- ============ BULLETINS ============ -->
+  <section class="block wrap" aria-label="Project bulletins">
+    <div class="board">
+
+      <article class="bulletin" id="v021">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+          <span class="latest">Latest</span>
+        </div>
+        <h3>Prism v0.2.1 — a typeface of its own</h3>
+        <p>Prism’s interface now speaks in <b>Prism Sans</b>, a font drawn specifically for the shell. Before drawing it, the builders tried every stock font EOU carries — each one was found wanting: spindly, blobby, small-caps, or clean but in a cell too wide for Prism’s layout. So a new one was made by hand: five-pixel glyphs, drawn seven rows tall inside the standard cell, with a dotted zero.</p>
+        <p>The difference is visible everywhere text appears — menu bar, directory windows, status line, clock. The previous font remains available: pick <b>Narrow Font</b> in the View menu any time; <b>Prism Font</b> brings the new face back. This is v0.2.1, verified running on the project’s test rig.</p>
+      </article>
+
+      <article class="bulletin" id="v02">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+        </div>
+        <h3>Prism v0.2 — double-click fixed, programs launch</h3>
+        <p>The big one. <b>Double-clicking works</b> — on drive icons, on folders, and on programs, which now launch for real instead of sitting there as pictures. The bug was found the honest way: hands-on testing at a real desk said double-click did nothing, and the hunt ended in the mouse driver’s click count, which reports <i>three</i> after a double-click, not two. The fix defers the selection highlight until the double-click window has passed.</p>
+        <p>Also in v0.2: <b>windows drag</b> by their title bars, a genuine shell window from the Special menu, the <b>Prism launcher button</b> at bottom-left, a <b>menu-bar clock</b> showing hours and minutes, and a new identity that is Prism’s own — flat colours, drawn hardware icons for floppy and hard drives, an amber signature band. The screen settles at <b>640 × 200</b>, the widest mode EOU offers.</p>
+      </article>
+
+      <article class="bulletin" id="v01">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+        </div>
+        <h3>Prism v0.1 — first light</h3>
+        <p>The shell’s first working version, running on NitrOS-9 EOU: a <b>menu bar</b> (Prism, File, View, Special), <b>drive icons</b> down the right of a 640-wide desktop, <b>directory windows</b> listing a drive’s real contents, and a <b>mouse pointer</b> driving all of it. Two themes from day one — a curated colour theme and Classic Mono — switchable live from the View menu.</p>
+        <p>Program launching was still a stub and the icons were simple line drawings, but the shape of the thing was on the screen and verified: the CoCo 3, wearing a desktop.</p>
+      </article>
+
+      <article class="bulletin" id="begins">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+        </div>
+        <h3>A desktop for the CoCo 3 — the project begins</h3>
+        <p>Keith Clark of Rodney, Ontario commissions a Finder-style graphical shell for the TRS-80 Color Computer 3 — written <b>from scratch</b>, in the open, as a <b>free gift to the CoCo community</b>. The brief came from putting the CoCo’s stock shell beside the polished graphical desktops of its era and deciding the hardware deserved better.</p>
+        <p>The project is called <b>Prism</b>. Its source will be published under the MIT licence when the first release ships, and this site is its home. Welcome — mind the pins.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ HOW THIS BOARD WORKS ============ -->
+  <section class="block wrap" aria-label="How this board works">
+    <div class="sec-head"><span class="sec-num">§</span><h2>How this board works</h2></div>
+    <div class="how">
+      <h3><span class="dot a"></span>The official record, kept in the open</h3>
+      <p>Bulletins are posted here by Prism’s maintainers when something ships, changes, or is worth reporting — releases, fixes, and honest setbacks alike. Entries are <b>dated, kept in order, and not quietly rewritten</b>; if a bulletin ever needs correcting, the correction gets its own pin.</p>
+      <p>Questions, bug reports and discussion don’t live on this page — they will live on the project’s <b>GitHub Discussions</b>, once the repository is public. Until then, consider the board read-only: check back when a new pin appears.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site">
+  <div class="wrap foot">
+    <p class="credit">Prism is a gift to the CoCo community from <b>Keith Clark</b> of Rodney, Ontario — designed and built with <b>Muse</b>.</p>
+    <div class="fine">
+      <p>Prism is an original work. It is functionally inspired by the classic graphical desktops of the 1980s, and is not affiliated with, endorsed by, or connected to Apple Inc. or Tandy / Radio Shack.</p>
+      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current development build (v0.2) captured in MAME.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

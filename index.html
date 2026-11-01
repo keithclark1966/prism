@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prism — A Graphical Desktop for the Color Computer 3</title>
+<meta name="description" content="Prism is a Finder-style graphical desktop shell for the TRS-80 Color Computer 3, running on NitrOS-9. An original work, and a gift to the CoCo community.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 L28 26 L4 26 Z' fill='none' stroke='%2335b6c9' stroke-width='2.5'/%3E%3Cpath d='M16 4 L16 26 L4 26 Z' fill='%23f2a81d' opacity='0.85'/%3E%3C/svg%3E">
+<!--
+  PRISM — project homepage (preview build, not yet published)
+  Future links, to be wired up when the project goes public:
+    GitHub repository : https://github.com/PLACEHOLDER/prism-coco3   (placeholder — does not exist yet)
+    Releases          : https://github.com/PLACEHOLDER/prism-coco3/releases   (placeholder — does not exist yet)
+  Do not turn these into live links until the repository is real.
+-->
+<style>
+  :root{
+    --ground:#0a0f14;
+    --ground-2:#0e151c;
+    --panel:#111a22;
+    --panel-2:#152029;
+    --line:#22303c;
+    --ink:#e9eff3;
+    --muted:#9db2bd;
+    --faint:#6d828f;
+    --teal:#35b6c9;
+    --teal-bright:#6fd3e4;
+    --amber:#f2a81d;
+    --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--font);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--teal);color:#06222a}
+  a{color:var(--teal-bright);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+
+  /* ---------- header ---------- */
+  header.site{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,15,20,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .site-inner{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+  .brand{display:flex;align-items:center;gap:11px;color:var(--ink);font-weight:700;letter-spacing:.14em;font-size:15px}
+  .brand:hover{text-decoration:none}
+  .brand svg{display:block}
+  .brand .ver{font-family:var(--mono);font-weight:400;letter-spacing:0;font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:20px;padding:2px 9px;margin-left:4px}
+  nav.main{margin-left:auto;display:flex;gap:26px;font-size:14.5px}
+  nav.main a{color:var(--muted)}
+  nav.main a:hover{color:var(--ink);text-decoration:none}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:88px;padding-bottom:30px;text-align:left}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";display:inline-block;width:26px;height:1px;background:var(--teal);vertical-align:middle;margin-right:12px}
+  h1.wordmark{
+    font-size:clamp(64px,11vw,124px);line-height:.95;font-weight:800;letter-spacing:.02em;
+    margin-bottom:8px;
+  }
+  h1.wordmark .facet{color:var(--teal)}
+  .pitch{
+    font-size:clamp(21px,3vw,28px);line-height:1.4;font-weight:300;color:var(--ink);
+    max-width:760px;margin:18px 0 14px;
+  }
+  .pitch strong{font-weight:600}
+  .meta-row{
+    display:flex;flex-wrap:wrap;gap:10px 26px;font-family:var(--mono);font-size:13px;color:var(--muted);
+    margin:22px 0 54px;
+  }
+  .meta-row span::before{content:"▸ ";color:var(--amber)}
+
+  /* screenshot frame */
+  .screen{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:12px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55),0 4px 18px rgba(0,0,0,.4);
+  }
+  .screen img{display:block;width:100%;height:auto;border-radius:7px;image-rendering:pixelated;background:#000}
+  .screen figcaption{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:13px 6px 3px;font-family:var(--mono);font-size:12.5px;color:var(--faint);
+  }
+  .screen figcaption .tag{color:var(--amber)}
+
+  /* ---------- sections ---------- */
+  section.block{padding-top:84px;padding-bottom:8px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:34px}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--amber);letter-spacing:.15em}
+  h2{font-size:clamp(30px,4.4vw,42px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sec-head{border-bottom:1px solid var(--line);padding-bottom:20px}
+  .lede{font-size:19px;color:var(--muted);max-width:820px;font-weight:300}
+  .lede strong,.cols p strong{color:var(--ink);font-weight:600}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:28px 56px;margin-top:36px}
+  .cols p{color:var(--muted);margin-bottom:16px}
+  .pull{
+    margin-top:44px;border-left:3px solid var(--teal);padding:6px 0 6px 26px;
+    font-size:clamp(20px,2.6vw,25px);line-height:1.45;font-weight:300;color:var(--ink);max-width:860px;
+  }
+  .pull em{color:var(--teal-bright);font-style:normal}
+
+  /* ---------- features ---------- */
+  .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .feat{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px 30px 22px;
+  }
+  .feat h3{font-size:19px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+  .feat .sub{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:20px}
+  .feat.working .sub{color:var(--teal)}
+  .feat.building .sub{color:var(--amber)}
+  .feat ul{list-style:none}
+  .feat li{padding:9px 0 9px 30px;position:relative;color:var(--muted);border-top:1px solid rgba(34,48,60,.55)}
+  .feat li:first-of-type{border-top:none}
+  .feat li b{color:var(--ink);font-weight:600}
+  .feat.working li::before{content:"✓";position:absolute;left:2px;color:var(--teal);font-weight:700}
+  .feat.building li::before{content:"→";position:absolute;left:2px;color:var(--amber);font-weight:700}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.t{background:var(--teal)} .dot.a{background:var(--amber)}
+
+  /* ---------- gallery ---------- */
+  .gal{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .gal figure{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+  .gal img{display:block;width:100%;height:auto;border-radius:7px;image-rendering:pixelated;background:#000}
+  .gal figcaption{padding:14px 8px 6px}
+  .gal figcaption b{display:block;font-size:15.5px;margin-bottom:3px}
+  .gal figcaption span{font-size:14px;color:var(--muted)}
+  .gal .vtag{font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:.12em;text-transform:uppercase}
+
+  /* ---------- requirements ---------- */
+  .req{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .req .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px 22px}
+  .req .k{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:10px}
+  .req .v{font-size:18px;font-weight:600;line-height:1.35}
+  .req .n{font-size:13.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .req-note{margin-top:22px;color:var(--muted);font-size:15.5px;max-width:840px}
+  .req-note b{color:var(--ink)}
+
+  /* ---------- download ---------- */
+  .dl{
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:52px 40px;text-align:center;margin-top:10px;
+  }
+  .dl .status{
+    display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--amber);border:1px solid rgba(242,168,29,.45);border-radius:20px;padding:5px 14px;margin-bottom:20px;
+  }
+  .dl h3{font-size:clamp(24px,3.4vw,32px);margin-bottom:12px}
+  .dl p{color:var(--muted);max-width:620px;margin:0 auto}
+
+  /* ---------- footer ---------- */
+  footer.site{margin-top:100px;border-top:1px solid var(--line);background:var(--ground-2)}
+  .foot{padding-top:52px;padding-bottom:60px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
+  .foot .credit{font-size:17px;line-height:1.6;max-width:520px}
+  .foot .credit b{color:var(--teal-bright);font-weight:600}
+  .foot .fine{font-size:13.5px;color:var(--faint);line-height:1.7}
+  .foot .fine p{margin-bottom:10px}
+
+  @media (max-width:880px){
+    .cols,.feat-grid,.gal,.foot{grid-template-columns:1fr}
+    .req{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    body{font-size:16px}
+    .hero{padding-top:56px;padding-bottom:20px}
+    nav.main{display:none}
+    .req{grid-template-columns:1fr}
+    .dl{padding:40px 24px}
+    section.block{padding-top:60px;padding-bottom:4px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap site-inner">
+    <a class="brand" href="#top" aria-label="Prism home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#35b6c9" stroke-width="2.5"/><path d="M16 4 L16 26 L4 26 Z" fill="#f2a81d" opacity="0.85"/></svg>
+      PRISM <span class="ver">v0.2</span>
+    </a>
+    <nav class="main">
+      <a href="#story">Story</a>
+      <a href="#features">Features</a>
+      <a href="#screenshots">Screenshots</a>
+      <a href="#requirements">Requirements</a>
+      <a href="#download">Download</a>
+      <a href="bulletins.html">Bulletin Board</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <div class="wrap hero">
+    <p class="eyebrow">A graphical desktop for the Color Computer 3</p>
+    <h1 class="wordmark">PRI<span class="facet">S</span>M</h1>
+    <p class="pitch">A Finder-style desktop shell for the <strong>TRS-80 Color Computer 3</strong> — menu bar, drive icons, windows and a mouse — written natively for the CoCo 3 and running on <strong>NitrOS-9</strong>.</p>
+    <div class="meta-row">
+      <span>NitrOS-9 / EOU</span>
+      <span>GIME hardware graphics</span>
+      <span>A native OS-9 program</span>
+      <span>Free — a community gift</span>
+    </div>
+    <figure class="screen">
+      <img src="assets/prism-desktop.png" alt="The Prism desktop: a menu bar reading Prism, File, View, Special across the top with a clock at the right, three drawn drive icons down the right side of a solid blue desktop, a Prism launcher button at bottom left, and the mouse pointer.">
+      <figcaption>
+        <span>The Prism desktop — 640 × 200 on the CoCo 3’s GIME graphics</span>
+        <span class="tag">In development · v0.2</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- ============ STORY ============ -->
+  <section class="block wrap" id="story">
+    <div class="sec-head"><span class="sec-num">01</span><h2>What it is</h2></div>
+    <p class="lede">Prism is a graphical desktop for a machine that shipped in 1986 with a command line. It gives the Color Computer 3 the kind of interface its hardware was always capable of: a <strong>menu bar</strong>, <strong>icons for your drives</strong>, <strong>windows that open onto real directories</strong>, and a <strong>mouse pointer</strong> to drive it all.</p>
+    <div class="cols">
+      <div>
+        <p>It began with a simple comparison. Put the CoCo 3’s stock shell beside the polished graphical desktops of its era and the gap is obvious — not in the hardware, which has real graphics modes, a 64-colour palette and a proper multitasking operating system in NitrOS-9, but in the shell nobody ever wrote for it. <strong>Prism is that shell.</strong></p>
+        <p>It is written from scratch in C, cross-compiled with modern tools and built directly against the NitrOS-9 windowing system, so it runs as a native OS-9 program — on top of the EOU (Ease of Use) distribution today, and on a real CoCo 3 as faithfully as in an emulator.</p>
+      </div>
+      <div>
+        <p>The project belongs to <strong>Keith Clark</strong> of Rodney, Ontario — a CoCo owner since the beginning, who came up through the CoCo 1 and 2 to the CoCo 3 and never really left. Prism is his tribute to the machine, and to the small, stubborn community that has kept it alive for forty years.</p>
+        <p>So it is being built the way community software should be: in the open, with original code, honest screenshots, and a release anyone can boot. When it is ready, it will simply be given away.</p>
+      </div>
+    </div>
+    <p class="pull">“The graphical environment is way better than the gshell in OS-9! <em>This what I want for the CoCo.</em>” — Keith, on seeing the GS/OS Finder — the brief Prism was built to</p>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section class="block wrap" id="features">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Features</h2></div>
+    <p class="lede" style="margin-bottom:34px">Prism is under active development. This list is kept honest: what you can use <strong>today</strong>, in the verified v0.2 build — and what is on the bench right now.</p>
+    <div class="feat-grid">
+      <div class="feat working">
+        <h3><span class="dot t"></span>Working today</h3>
+        <p class="sub">Verified in v0.2</p>
+        <ul>
+          <li><b>Menu bar</b> — Prism, File, View and Special menus, with pull-downs</li>
+          <li><b>Desktop drive icons</b> — /DD, /H1 and /D0 down the right of the screen, drawn as the hardware they are: hard-drive units, and a floppy for /D0</li>
+          <li><b>Double-click opening</b> — double-click a drive icon and its window opens</li>
+          <li><b>Directory windows</b> — open a drive and browse its real contents, with close box and drop shadow</li>
+          <li><b>Draggable windows</b> — pick a window up by its title bar and put it where you want it</li>
+          <li><b>Program launching</b> — run programs from a window instead of typing paths</li>
+          <li><b>The Prism button</b> — a Start-style launcher, bottom-left, for programs, drives and settings</li>
+          <li><b>Menu-bar clock</b> — hours and minutes at the right of the menu bar, redrawn once a minute so it costs nothing</li>
+          <li><b>Mouse pointer</b> — full pointer control with click-to-select</li>
+          <li><b>A unique CoCo identity</b> — Prism’s own chrome and finish: flat colours, a smaller interface font, polished to a professional standard</li>
+          <li><b>Two themes</b> — the curated colour theme, and Classic Mono, switchable live from the View menu</li>
+          <li><b>Runs on NitrOS-9 EOU</b> — install it in the CMDS directory and type <span style="font-family:var(--mono)">prism</span></li>
+          <li><b>Hi-res screen</b> — a 640 × 200 graphics desktop on the GIME, in four palette colours</li>
+          <li><b>Clean exit</b> — quit straight back to the OS-9 shell prompt</li>
+        </ul>
+      </div>
+      <div class="feat building">
+        <h3><span class="dot a"></span>In development</h3>
+        <p class="sub">On the bench now</p>
+        <ul>
+          <li><b>A self-booting release disk</b> — one image that boots straight into Prism</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREENSHOTS ============ -->
+  <section class="block wrap" id="screenshots">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Screenshots</h2></div>
+    <p class="lede" style="margin-bottom:34px">Real screens from the running program, captured from the emulator — no mock-ups. These are <strong>current shots (v0.2)</strong>: Prism’s own CoCo identity, with drawn hardware icons, flat colour and the smaller interface font.</p>
+    <div class="gal">
+      <figure>
+        <img src="assets/prism-directory.png" alt="A Prism directory window open on the /DD drive, its amber title bar and drop shadow over the blue desktop, listing real folders — APPS, BBS, BOOTS, CMDS, DEFS and more — with an item count along the bottom.">
+        <figcaption>
+          <span class="vtag">v0.2</span>
+          <b>A directory window on /DD</b>
+          <span>The EOU system drive’s real contents — opened with a double-click, in a window you can drag by its amber title bar.</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="assets/prism-mono.png" alt="The Prism desktop in the Classic Mono theme: a grey desktop, white menu bar with a clock at the right, and three drive icons in black and white.">
+        <figcaption>
+          <span class="vtag">v0.2</span>
+          <b>Classic Mono theme</b>
+          <span>The monochrome look, for the classic feel — one pick from the View menu, applied live.</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="assets/eou-gshell.png" alt="The NitrOS-9 EOU desktop at 640 wide: the GShell environment with its own menu bar, drive icons and a shell window — the system Prism runs on.">
+        <figcaption>
+          <span class="vtag">The platform</span>
+          <b>NitrOS-9 EOU, underneath</b>
+          <span>Prism runs on the EOU distribution of NitrOS-9 — a complete, modern OS-9 system for the CoCo 3.</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="assets/prism-desktop.png" alt="The Prism desktop in the colour theme: solid blue desktop, white menu bar with a clock, three drive icons — hard drives for /DD and /H1, a floppy for /D0 — and the arrow pointer.">
+        <figcaption>
+          <span class="vtag">v0.2</span>
+          <b>The colour theme</b>
+          <span>Solid blue ground, white paper, black ink, amber accents — flat colour now, no dither, with the selected drive lit in amber.</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ REQUIREMENTS ============ -->
+  <section class="block wrap" id="requirements">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Requirements</h2></div>
+    <div class="req">
+      <div class="card">
+        <p class="k">Machine</p>
+        <p class="v">Color Computer 3</p>
+        <p class="n">A real CoCo 3, or an emulator that runs one faithfully.</p>
+      </div>
+      <div class="card">
+        <p class="k">Memory</p>
+        <p class="v">512K or more</p>
+        <p class="n">The standard EOU configuration; Prism itself is a small native program.</p>
+      </div>
+      <div class="card">
+        <p class="k">System</p>
+        <p class="v">NitrOS-9 EOU</p>
+        <p class="n">The Ease of Use distribution of NitrOS-9 Level 2 for the CoCo 3.</p>
+      </div>
+      <div class="card">
+        <p class="k">Input</p>
+        <p class="v">Mouse or joystick</p>
+        <p class="n">A CoCo mouse or joystick on the right controller port drives the pointer.</p>
+      </div>
+    </div>
+    <p class="req-note">Prism is being <b>developed and tested in MAME</b> — on the HD6309 configuration with 2 MB of RAM — ahead of testing on the real hardware in storage. Every screenshot on this page is from that test rig.</p>
+  </section>
+
+  <!-- ============ DOWNLOAD ============ -->
+  <section class="block wrap" id="download">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Download</h2></div>
+    <div class="dl">
+      <span class="status">First public release in preparation</span>
+      <h3>Not quite yet — and worth the wait.</h3>
+      <p>The release disk is being prepared alongside the current development pass. When it lands, this page will offer the self-booting Prism disk image and the full source code — free, as promised. No placeholder links, no vapourware: it ships when it boots clean and looks the part.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site">
+  <div class="wrap foot">
+    <p class="credit">Prism is a gift to the CoCo community from <b>Keith Clark</b> of Rodney, Ontario — designed and built with <b>Muse</b>.</p>
+    <div class="fine">
+      <p>Prism is an original work. It is functionally inspired by the classic graphical desktops of the 1980s, and is not affiliated with, endorsed by, or connected to Apple Inc. or Tandy / Radio Shack.</p>
+      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current development build (v0.2) captured in MAME.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
