@@ -178,10 +178,20 @@
   <section class="block wrap" aria-label="Project bulletins">
     <div class="board">
 
+      <article class="bulletin" id="maxed">
+        <div class="b-meta">
+          <span class="date">2 November 2026</span>
+          <span class="latest">Latest</span>
+        </div>
+        <h3>The design rule: use the whole machine</h3>
+        <p>Keith has set Prism’s design rule, and it is now the project’s north star: <b>bring out the true power of the CoCo 3 — the software it should have had in its heyday.</b> In his words: “We're going to use every capability of this little baby.”</p>
+        <p>First consequence: <b>Prism will use the full 2 MB, page-swapped, in everyday operations.</b> The GIME’s memory management swaps 8K pages; two megabytes is 256 of them. Directory and icon caches, font caches and per-window backing stores will live in those pages and be mapped in on demand, so the desktop runs from RAM instead of re-reading disks. The design target is the maxed machine — <b>2 MB, HD6309, Multi-Pak, Orch-90</b> — the setup that was out of reach for most owners in the machine’s heyday and that emulation now gives everyone for free.</p>
+        <p>Honest status, as always on this board: the pager is a directive and a design, now at the top of the roadmap — not yet a shipped feature. The verified build remains v0.2.1. Watch this board.</p>
+      </article>
+
       <article class="bulletin" id="v021">
         <div class="b-meta">
           <span class="date">1 November 2026</span>
-          <span class="latest">Latest</span>
         </div>
         <h3>Prism v0.2.1 — a typeface of its own</h3>
         <p>Prism’s interface now speaks in <b>Prism Sans</b>, a font drawn specifically for the shell. Before drawing it, the builders tried every stock font EOU carries — each one was found wanting: spindly, blobby, small-caps, or clean but in a cell too wide for Prism’s layout. So a new one was made by hand: five-pixel glyphs, drawn seven rows tall inside the standard cell, with a dotted zero.</p>
