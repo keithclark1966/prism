@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changes — Prism</title>
+<meta name="description" content="The Prism development log: every change to the CoCo 3 graphical desktop, dated and in detail — versions, fixes, root causes, and honest status, newest first.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 L28 26 L4 26 Z' fill='none' stroke='%2335b6c9' stroke-width='2.5'/%3E%3Cpath d='M16 4 L16 26 L4 26 Z' fill='%23f2a81d' opacity='0.85'/%3E%3C/svg%3E">
+<!--
+  PRISM — changes page (the dated development log)
+  Kept from the project's own build records. Entries are dated,
+  newest first, and not quietly rewritten — corrections get
+  their own entry, same rule as the Bulletin Board.
+-->
+<style>
+  :root{
+    --ground:#0a0f14;
+    --ground-2:#0e151c;
+    --panel:#111a22;
+    --panel-2:#152029;
+    --line:#22303c;
+    --ink:#e9eff3;
+    --muted:#9db2bd;
+    --faint:#6d828f;
+    --teal:#35b6c9;
+    --teal-bright:#6fd3e4;
+    --amber:#f2a81d;
+    --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ground);
+    color:var(--ink);
+    font-family:var(--font);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--teal);color:#06222a}
+  a{color:var(--teal-bright);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 28px}
+
+  /* ---------- header ---------- */
+  header.site{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,15,20,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .site-inner{display:flex;align-items:center;gap:14px;padding-top:14px;padding-bottom:14px}
+  .brand{display:flex;align-items:center;gap:11px;color:var(--ink);font-weight:700;letter-spacing:.14em;font-size:15px}
+  .brand:hover{text-decoration:none}
+  .brand svg{display:block}
+  .brand .ver{font-family:var(--mono);font-weight:400;letter-spacing:0;font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:20px;padding:2px 9px;margin-left:4px}
+  nav.main{margin-left:auto;display:flex;gap:26px;font-size:14.5px}
+  nav.main a{color:var(--muted)}
+  nav.main a:hover{color:var(--ink);text-decoration:none}
+  nav.main a.here{color:var(--ink);border-bottom:2px solid var(--amber);padding-bottom:2px}
+
+  /* ---------- page head ---------- */
+  .page-head{padding-top:72px;padding-bottom:6px}
+  .eyebrow{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";display:inline-block;width:26px;height:1px;background:var(--teal);vertical-align:middle;margin-right:12px}
+  h1.board-title{font-size:clamp(38px,6vw,58px);font-weight:800;letter-spacing:-.01em;line-height:1.05;margin-bottom:16px}
+  h1.board-title .facet{color:var(--teal)}
+  .lede{font-size:19px;color:var(--muted);max-width:820px;font-weight:300}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  /* ---------- sections ---------- */
+  section.block{padding-top:64px;padding-bottom:8px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:34px}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--amber);letter-spacing:.15em}
+  h2{font-size:clamp(30px,4.4vw,42px);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+  .sec-head{border-bottom:1px solid var(--line);padding-bottom:20px}
+
+  /* ---------- the log ---------- */
+  .board{display:flex;flex-direction:column;gap:26px;max-width:900px}
+  .bulletin{
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:34px 38px 28px;
+  }
+  .bulletin::before{
+    content:"";position:absolute;top:-8px;left:38px;width:16px;height:16px;border-radius:50%;
+    background:var(--teal);border:2px solid var(--ground);
+  }
+  .board .bulletin:nth-child(even)::before{background:var(--amber)}
+  .bulletin .b-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+  .bulletin .date{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);
+  }
+  .bulletin .latest{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);border:1px solid rgba(53,182,201,.45);border-radius:20px;padding:2px 10px;
+  }
+  .bulletin .status{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--amber);border:1px solid rgba(242,168,29,.45);border-radius:20px;padding:2px 10px;
+  }
+  .bulletin h3{font-size:clamp(21px,3vw,26px);font-weight:700;line-height:1.25;margin-bottom:10px}
+  .bulletin h3 .v{font-family:var(--mono);font-weight:400;color:var(--teal-bright)}
+  .bulletin p{color:var(--muted);margin-bottom:12px;max-width:760px}
+  .bulletin p:last-child{margin-bottom:0}
+  .bulletin p b{color:var(--ink);font-weight:600}
+  .bulletin code{font-family:var(--mono);font-size:.92em;color:var(--teal-bright)}
+  .bulletin ul{margin:2px 0 14px 20px;color:var(--muted);max-width:740px}
+  .bulletin ul:last-child{margin-bottom:0}
+  .bulletin li{margin-bottom:8px}
+  .bulletin li:last-child{margin-bottom:0}
+  .bulletin li b{color:var(--ink);font-weight:600}
+
+  /* ---------- how this log works ---------- */
+  .how{
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:38px 40px;max-width:900px;
+  }
+  .how h3{font-size:21px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+  .how p{color:var(--muted);margin-bottom:12px;max-width:760px}
+  .how p:last-child{margin-bottom:0}
+  .how p b{color:var(--ink);font-weight:600}
+  .how code{font-family:var(--mono);font-size:.92em;color:var(--teal-bright)}
+  .dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot.t{background:var(--teal)} .dot.a{background:var(--amber)}
+
+  /* ---------- footer ---------- */
+  footer.site{margin-top:100px;border-top:1px solid var(--line);background:var(--ground-2)}
+  .foot{padding-top:52px;padding-bottom:60px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
+  .foot .credit{font-size:17px;line-height:1.6;max-width:520px}
+  .foot .credit b{color:var(--teal-bright);font-weight:600}
+  .foot .fine{font-size:13.5px;color:var(--faint);line-height:1.7}
+  .foot .fine p{margin-bottom:10px}
+
+  @media (max-width:880px){
+    .foot{grid-template-columns:1fr}
+  }
+  @media (max-width:560px){
+    body{font-size:16px}
+    .page-head{padding-top:48px}
+    nav.main{display:none}
+    section.block{padding-top:48px;padding-bottom:4px}
+    .bulletin{padding:28px 24px 22px}
+    .bulletin::before{left:24px}
+    .how{padding:30px 24px}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap site-inner">
+    <a class="brand" href="index.html" aria-label="Prism home">
+      <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#35b6c9" stroke-width="2.5"/><path d="M16 4 L16 26 L4 26 Z" fill="#f2a81d" opacity="0.85"/></svg>
+      PRISM <span class="ver">v0.2</span>
+    </a>
+    <nav class="main">
+      <a href="index.html#story">Story</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#screenshots">Screenshots</a>
+      <a href="index.html#requirements">Requirements</a>
+      <a href="index.html#download">Download</a>
+      <a href="changes.html" class="here" aria-current="page">Changes</a>
+      <a href="bulletins.html">Bulletin Board</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ LOG HEAD ============ -->
+  <div class="wrap page-head">
+    <p class="eyebrow">The development log</p>
+    <h1 class="board-title">Changes</h1>
+    <p class="lede">Every change to Prism, <strong>dated and in detail</strong> — what changed, why, and what it cost to find out. The <a href="bulletins.html">Bulletin Board</a> carries the headlines; this page is the workshop record behind them, kept for the CoCo community and anyone building along. Newest first.</p>
+  </div>
+
+  <!-- ============ ENTRIES ============ -->
+  <section class="block wrap" aria-label="Prism change log">
+    <div class="board">
+
+      <article class="bulletin" id="v023">
+        <div class="b-meta">
+          <span class="date">3 November 2026</span>
+          <span class="latest">Latest</span>
+          <span class="status">In verification</span>
+        </div>
+        <h3><span class="v">v0.2.3</span> — the Shell Window gets a real window</h3>
+        <p>Found the honest way — at Keith’s desk, using the exhibit like a user. <b>Special → Shell Window</b> reported “Shell window open on /W5”, and the shell really had started… but pressing CLEAR to cycle to it never arrived. The shell was running on a window that, as far as the display was concerned, did not exist.</p>
+        <p><b>Root cause:</b> Prism opened <code>/W5</code> and forked the shell onto it, but never <i>defined</i> the window — no <code>DWSet</code>. EOU only cycles the display among defined windows, and the boot defines just <code>/W1</code> and <code>/W2</code>. Worse, the spare window descriptors’ own stored definitions are invalid: a bare <code>wcreate /w5</code> answers <b>Error #195 — Illegal window definition</b>, so any program that trusts the descriptor defaults hits the same wall. The programs that work — <code>pdemo</code>, Prism’s own screen — define their windows explicitly, parameters and all.</p>
+        <ul>
+          <li><b>Shell Window fix:</b> on opening <code>/W5</code>, Prism now writes the full <code>DWSet</code> definition first — screen type 7, origin 0,0, 80×25, foreground 2, background 1, border 2 (the same parameters <code>pdemo</code> uses) — and only then forks the shell.</li>
+          <li><b>Launch window, same treatment:</b> the program-launch window <code>/W4</code> is now defined at open too, so a launched program’s output — or its error message — can never again run invisibly on an undefined window.</li>
+          <li><b>Plainer words:</b> the status line now reads “Shell window open on /W5 — press CLEAR (Home) to visit it.”</li>
+          <li><b>Status, stated plainly:</b> built and <b>in verification on the test rig</b> as this entry is written. It joins the exhibit build once the rig proof passes; until then the exhibit still runs v0.2.2.</li>
+        </ul>
+        <p>Also on the bench today: Keith judged that Prism Sans’ characters still don’t sit in proportion to each other, so a <b>font comparison sheet</b> was rendered from the real glyph data of four candidates — Prism Sans, EOU Narrow, EOU Standard / CocoGIME (8×8), and SysSmall — for a pick-by-eye verdict; the winner becomes the default in the polish update. And the <b>directory-window icon alignment</b> complaint was traced in the drawing code: rows are 11 px tall but the folder and file icons are drawn 14–16 px, on three different vertical anchors (folder at the row top, file 2 px above it, text 1 px below), so icons overflow their rows and drift against the names. The fix — icons redrawn to fit the row, one shared centre line — is queued in the same polish update.</p>
+      </article>
+
+      <article class="bulletin" id="v022">
+        <div class="b-meta">
+          <span class="date">2 November 2026</span>
+        </div>
+        <h3><span class="v">v0.2.2</span> — one-action Shut Down, and a portable bundle</h3>
+        <ul>
+          <li><b>Shut Down (the headline):</b> a new third item in the Prism menu (and in the launcher menu; Quit Prism stays the plain exit-to-shell). Shut Down writes one timestamped line — <code>PRISM-SAFE-SHUTDOWN HH:MM:SS</code> — to <code>/H1/SHUTDOWN.SIG</code> and exits exactly like Quit. A watcher script on the host (a MAME <code>-autoboot_script</code>) fingerprints every marker in the drive image at start-up — so a stale marker from a previous session is baselined and can <b>never</b> fire — then rescans in small per-frame slices; a new or changed marker must survive <b>two consecutive complete scans</b> before the emulator closes itself. No timers, no guesses; the worst case of any failure is that the emulator stays open. Proven end-to-end three times on the test rig, and across eight rig boots the watcher never fired without a fresh marker. Build: <code>dist/prism</code> 17,185 bytes.</li>
+          <li><b>Boot-to-Prism:</b> the hard drive’s startup brings Prism up directly, and after Prism exits it prints “Prism closed. It is now safe to close the emulator. Type PRISM to run it again, or GSHELL for the EOU GUI.” — the fallback if the watcher is ever absent.</li>
+          <li><b>Exhibit fix:</b> the long-standing MAME ROM-audit warning on boot was traced to a bogus <code>bios b11e11</code> line in <code>coco.ini</code> and removed. It mattered more than it looked: the warning parks the machine <i>before</i> the shutdown watcher’s script ever runs. The exhibit now boots warning-free.</li>
+          <li><b>Portable bundle (Windows-first):</b> the official MAME 0.275 Windows binary, unmodified; drive images with boot-to-Prism and Shut Down baked in; the exhibit’s own machine config; every path relative, so nothing touches a user’s existing MAME setup. It ships with <b>zero ROM bytes</b>: the launcher checks for the two ROM files by SHA-1 and, if they’re missing, offers exactly one button — “Get the CoCo 3 ROMs” — which downloads them from the Color Computer Archive and verifies before enabling Start (manual copy is the fallback). Verified live: <code>coco3.rom</code> 32,768 B, SHA-1 <code>e0d82953…</code>; <code>disk11.rom</code> 8,192 B, SHA-1 <code>10bdc5aa…</code> — byte-for-byte what the <code>coco3h</code> driver demands. Distribution zip: 151,499,915 bytes.</li>
+          <li><b>Testing notes, honestly:</b> under Wine 9.0 the shipped <code>mame.exe</code> starts but cannot open the bundle’s disk images — a Wine file-layer quirk, not a bundle defect (the same images boot under Linux MAME) — so the decisive end-to-end test will run in a Windows 11 VirtualBox VM. Public distribution containing EOU still awaits Curtis Boyle’s permission, asked on 2 November.</li>
+        </ul>
+      </article>
+
+      <article class="bulletin" id="fullram">
+        <div class="b-meta">
+          <span class="date">2 November 2026</span>
+        </div>
+        <h3>The design rule: use the whole machine — the v0.3 “Full RAM” direction</h3>
+        <p>Keith set a standing design rule: <b>Prism must use the whole 2 MB in everyday operations</b>, through the GIME’s memory management — 8K pages, 256 of them in a maxed machine, swapped into the CPU’s 64K window on demand. Directory caches, icon caches, font caches and per-window backing stores will live in paged RAM and be mapped in as needed, so the desktop works from memory instead of re-reading disks.</p>
+        <p>Sequencing, as designed: the <b>page manager lands in os9sys first</b> (block allocation, map-in/map-out, a small LRU, and yielding blocks under system pressure so Prism never starves its neighbours), <b>Prism adopts it second</b>, and the planned CoCo RTS is designed against it third. That ordering is the <b>v0.3 “Full RAM”</b> milestone; the System Monitor and Orch-90 demo adopt the layer on their next revisions. A design entry, not a shipped feature — it is recorded here because the rule now governs every build after it.</p>
+      </article>
+
+      <article class="bulletin" id="v021">
+        <div class="b-meta">
+          <span class="date">1 November 2026 — evening</span>
+        </div>
+        <h3><span class="v">v0.2.1</span> — Prism Sans, a typeface of its own</h3>
+        <p>Keith’s verdict on the v0.2 interface font (EOU resident 200/2 “Narrow”): still ugly — “maybe smaller yet?” A fonts-only session followed. First, a survey of everything EOU loads at boot, each rendered in Prism and judged on screenshots:</p>
+        <ul>
+          <li><b>200/2 Narrow</b> (6×8) — the v0.2 default: thin, spindly, uneven spacing.</li>
+          <li><b>200/50 MacNarow</b> (6×8) — a heavy bold blob; worse for a light interface.</li>
+          <li><b>200/39 SysSmall</b> (8×8 cell, ~5 px glyphs) — the cleanest stock face, but the 8-wide cell widens all text: the launcher-button label overflows and the icon-label column math breaks. Not a drop-in.</li>
+          <li><b>200/34 Small</b> — lowercase renders as small caps; chunky, gamey. <b>200/49 MacStd</b> and <b>200/21 IBM</b> were judged from the contact sheet only (bold/heavy; serif typewriter — wrong identity).</li>
+        </ul>
+        <p>The winner was drawn, not found: <b>Prism Sans</b> — hand-drawn 5-px glyphs, 7 rows tall inside the standard 6×8 cell (so not one layout constant moved), full printable ASCII, a dotted zero to separate it from the letter O. It is generated by <code>fonttest/makefont.py</code> into <code>src/prismfont.h</code>, embedded in the binary, <code>GPLoad</code>ed at start-up into group 200 <b>buffer 52</b> — the first buffer above EOU’s own 1–51 — and <code>FontSet</code> as the default. The View menu gained <b>Prism Font</b> and <b>Narrow Font</b>, switching live.</p>
+        <ul>
+          <li><b>Lesson, written down:</b> WindInt’s text grid is locked to 8-px rows. A font header declaring 7 rows wrapped the status line onto the menu row and double-spaced the directory — the font declares y=8 with its seventh row simply blank.</li>
+          <li><b>Lesson two:</b> font buffers are not all equal. The identical font in buffer <b>200/96</b> broke <code>CurXY</code> positioning at high columns (clock and icon labels streamed across the menu row); buffer 52 positions perfectly. 52 is proven, 96 is poisoned.</li>
+          <li>Build: <code>dist/prism</code> 16,610 bytes; installed into the exhibit with byte-identical read-back and screenshot-verified in an isolated instance (the running exhibit was never touched by the test).</li>
+        </ul>
+      </article>
+
+      <article class="bulletin" id="v02">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+        </div>
+        <h3><span class="v">v0.2</span> — identity, double-click, launching</h3>
+        <ul>
+          <li><b>Screen:</b> 640×200 — screen type 7 at 80×25, the documented EOU maximum, verified on screen before adoption (DWSet requests for 106×25 and 80×28 fail silently). Font 200/2 “Narrow” (6×8) throughout; text laid out in pixels.</li>
+          <li><b>Double-click — the session’s #1 bug, fixed for real.</b> The chain, each link proven before the next fix: v0.1.1 trusted the driver’s release-edge click count — which reads <b>3</b> after a double-click, not 2. A click-count rescue was then tried and <b>rejected in full</b>: after a slow descent into a new directory, a second click’s release carried a stale count whose position hit-tested to the same row in the <i>new</i> window, and Prism spuriously launched the “Answer” program. The shipped mechanism trusts only what Prism can observe itself — <b>its own press edges on the same target within 42 ticks</b> — with selection painting <b>deferred 48 ticks</b>, until the double-click window has fully closed, so a repaint (~0.1–0.3 s for four row paints) can never span and swallow the second press. The packet holds current state, not a queue; that was the whole trap. Accepted cost, by design: a single click’s highlight lands ~0.8 s after the press; a double-click opens immediately.</li>
+          <li><b>Program launching:</b> File → Open, or a double-click on an executable, forks it through a shell on <code>/W4</code> (modal; Prism <code>F$Wait</code>s, then reports “Program finished”). Programs that open their own windows work inside the flow — the bundled <code>pdemo</code> <code>DWSet</code>s and selects its own <code>/W3</code>, draws, and waits for its own key. <b>Special → Shell Window</b> forks a genuine interactive shell on <code>/W5</code>, left running and visited with CLEAR.</li>
+          <li><b>Chrome and identity:</b> paper menu bar with an <b>HH:MM clock</b> at the right end (redraws only when the minute changes — the entire cost is one 40×16 rect per minute); a 4-segment spectrum band under the bar (ink | amber | paper | ground); amber title bars with the title centred in ink; dot-pattern drop shadows (the system 50% pattern, group 204 buffer 1 — A/B-tested against solid and kept); procedural hardware icons (hard drive, floppy, folder, file, executable, trash) drawn from palette-register primitives, so both themes remap them for free; a <b>draggable</b> directory window (title-bar drag with an outline ghost, clamped on screen) with close box and page arrows; 64-entry listings, 10 rows per page, “..” no longer listed; the <b>Prism launcher button</b> bottom-left with its 9-item pop-up menu; an About dialog; and a clean Quit — “Prism 0.2 exited.”</li>
+          <li><b>Platform findings (verified on screen or in logs):</b> the CoCo mouse in MAME is a <b>relative</b> device — the packet integrates host deltas, so absolute pointer warps leave it frozen at (330,104) while buttons register; that one fact ended a day of “pointer freeze” misdiagnoses (a physical mouse emits deltas and always worked). <code>ESC $30</code> resets the palette — it is not a border call, and v0.2 never uses it. <code>PutBlk</code> does not render in any tried form on this WindInt, which is why the icons are drawn primitives. Directory classification costs real time: an <code>SS_FD</code> per entry runs ~3–4 s for 38 entries and ~10–15 s for 64.</li>
+          <li>Build: <code>dist/prism</code> 15,448 bytes. Verified across ten Spectacle screenshots: both themes, a fast double-click opening /DD, descent into /DD/CMDS without the rejected rescue’s false launch, <code>pdemo</code> launched from the menu, the launcher menu, About, the /W5 shell executing <code>date</code>, a title-bar drag, and a clean quit.</li>
+          <li><b>Shortfalls, on the record:</b> the standalone release disk is still a data disk, not self-booting; the Shell Window’s shell is reaped only when Prism exits; large-directory classification is slow and listings cap at 64; single-click highlight lags ~0.8 s by design (above).</li>
+        </ul>
+      </article>
+
+      <article class="bulletin" id="v01">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+        </div>
+        <h3><span class="v">v0.1</span> — first light</h3>
+        <ul>
+          <li><b>The platform first:</b> EOU was maximised with <b>SwapBoot</b> — of the five complete boot sets it found, the <b>EMUSOFTCLOCK</b> set was chosen (this emulated machine has no RTC; boots pause at a “Time?” prompt and ENTER accepts) — and the monitor type set to RGB. GShell came up at a true 640-wide desktop in correct greys, in place of the 320-wide composite rendition it had been showing.</li>
+          <li><b>The mouse fix that was itself the bug:</b> <code>SS_Mouse</code> returned a frozen, railed position (X=0, Y=198) while buttons worked. The cause was a setting applied during the first fix attempt: MAME’s Machine Configuration <b>“Hi-Res Joystick Interfaces” must be NONE</b> for this setup — EOU reads a plain joystick-ADC mouse on the right port (<code>PTRRES=0</code>), and the hi-res routing means the two never meet. The MAME UI would not persist the change, so <code>coco3h.cfg</code> was hand-edited (<code>hires_intf</code> value 1 → 0). After that, the diagnostic <code>mtest</code> swept X 330→634 and Y 104→195 with clicks registering, and the arrow tracked in both GShell and Prism. Right Controller Port = P1 = <code>joystick_rx/ry</code>; the launcher passes <code>-mouse</code> so the host mouse feeds MAME at all.</li>
+          <li><b>Toolchain, all user-space, no sudo:</b> CMOC 0.1.86, LWTools 4.21, Toolshed 2.6.1, plus byacc, GNU m4 and flex to satisfy the builds (CMOC needs a yacc; bison was absent). Smoke test passed: <code>hello.c</code> → a 1,687-byte OS-9 module, listed by Toolshed on a scratch disk.</li>
+          <li><b>The shell itself:</b> Prism opens its own device window with <code>DWSet</code> and selects it; on exit it <code>DWEnd</code>s and the user’s shell screen returns. Session 1’s canvas was screen type 7 at 640×192 with four palette registers in fixed roles — ground deep teal-blue <code>$19</code>, paper white <code>$3F</code>, ink black <code>$00</code>, accent warm amber <code>$34</code> — with <b>Classic Mono</b> (light grey <code>$38</code>, dark grey accent <code>$07</code>) switchable live from the View menu. Menu bar (Prism / File / View / Special), drive icons for <code>/DD</code>, <code>/H1</code>, <code>/D0</code> down the right side, directory windows listing a drive’s real contents, and the pointer read only through <code>SS_Mouse</code> ($89), polled on an <code>F$Sleep</code>-paced loop at ~30 Hz.</li>
+          <li><b>v0.1.1 (same day):</b> double-click detection moved onto the <b>release edge</b> of the driver’s click count — on a press packet the count reads 0 or 1; it only reaches 2 on the <i>release</i> packet of the second click, then decays. (The mechanism was proven at the packet level; v0.2 later replaced it wholesale — see that entry.)</li>
+          <li><b>Gotchas, recorded so nobody repeats them:</b> WindInt pattern fills paint only the pattern buffer’s <i>value-1</i> pixels — a textured ground needs an opaque solid base pass first, or closed menus leave permanent ghosts (found on screen, fixed in v0.1’s final draw). And <code>os9 copy</code> lands files without execute bits: <code>os9 attr -pe</code> is the incantation that yields the standard <code>--e-rewr</code>; plain <code>-e</code> leaves the shell answering Error #216.</li>
+          <li>Build: <code>dist/prism</code> 7,451 bytes, installed in the EOU hard drive’s CMDS. Verified on screen: desktop up, /DD directory window matching a host-side <code>os9 dir</code> exactly, Classic Mono applied live, clean exit to a live Shell+ prompt.</li>
+          <li><b>Honest shortfalls at v0.1:</b> program launching stubbed (the <code>F$Fork</code> wrapper was built and linked; window ownership/hand-back was v0.2 work); icons were line drawings, not bitmaps; listings showed the first 15 entries with no scrolling; no self-booting standalone disk yet — session 1 shipped the bare binary plus a data disk that runs on any booted NitrOS-9/EOU system.</li>
+        </ul>
+      </article>
+
+      <article class="bulletin" id="begins">
+        <div class="b-meta">
+          <span class="date">1 November 2026</span>
+        </div>
+        <h3>The project begins</h3>
+        <p>Keith Clark of Rodney, Ontario commissions a Finder-style graphical shell for the TRS-80 Color Computer 3 — written <b>from scratch</b>, in the open, as a <b>free gift to the CoCo community</b>, after putting the CoCo’s stock shell beside the polished graphical desktops of its era and deciding the hardware deserved better. The direction: Muse has total development control; Keith approves the overall look and shine. The finish test for every screen, set on day one of the polish work: <i>“Would this look at home next to the GS/OS Finder?”</i></p>
+        <p>The project is called <b>Prism</b>. Its source is published under the MIT licence, and this site is its home.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ HOW THIS LOG WORKS ============ -->
+  <section class="block wrap" aria-label="How this log works">
+    <div class="sec-head"><span class="sec-num">§</span><h2>How this log works</h2></div>
+    <div class="how">
+      <h3><span class="dot t"></span>Kept from the build records, in the open</h3>
+      <p>This page is written from Prism’s own build log and design notes — the same records the work itself is done from. Entries are <b>dated, kept in order, and not quietly rewritten</b>; if an entry ever needs correcting, the correction gets its own entry. Statuses are stated as they are: if a build is in verification, the entry says so.</p>
+      <p><b>How Prism is built:</b> C written for <b>CMOC</b> (0.1.86), with all OS-9 system calls behind a thin wrapper library, <code>os9sys</code> — the project’s only assembly — assembled and linked with <b>LWTools</b> 4.21 and imaged with <b>Toolshed</b> 2.6.1. Development and verification run on a MAME <code>coco3h</code> rig (2 MB, HD6309) that drives the real menus and takes real screenshots; nothing is called done from a log line alone. Questions and discussion live on the project’s <b>GitHub Discussions</b>.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site">
+  <div class="wrap foot">
+    <p class="credit">Prism is a gift to the CoCo community from <b>Keith Clark</b> of Rodney, Ontario — designed and built with <b>Muse</b>.</p>
+    <div class="fine">
+      <p>Prism is an original work. It is functionally inspired by the classic graphical desktops of the 1980s, and is not affiliated with, endorsed by, or connected to Apple Inc. or Tandy / Radio Shack.</p>
+      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current development build (v0.2) captured in MAME.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
