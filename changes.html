@@ -187,11 +187,71 @@
   <section class="block wrap" aria-label="Prism change log">
     <div class="board">
 
+      <article class="bulletin" id="combined-20261103">
+        <div class="b-meta">
+          <span class="date">3 November 2026 — night</span>
+          <span class="latest">Latest</span>
+        </div>
+        <h3>One night, four versions — the combined exhibit update</h3>
+        <p>The day’s four builds — <b>v0.2.3, v0.2.4, v0.2.5 and v0.2.6</b>, each verified on the test rig on its own — were installed into the live exhibit as <b>one combined update</b>, so the machine Keith actually uses rebooted once and woke up with all of it: the exhibit now runs <b>Prism 0.2.6</b> (binary 18,056 bytes). The entries below carry each version’s detail; this one carries the parts that belong to the machine, not to any single version.</p>
+        <ul>
+          <li><b>The clock is right at boot:</b> the launcher stamps the host’s date and time into a <code>HOSTTIME</code> file on the <code>/H1</code> image before MAME starts, and the startup file feeds it to <code>setime</code>. No more “Time?” prompt, no more stray 2014 dates — the guest trails the host by under a minute (the stamp-to-boot latency), which is the accuracy Keith accepted. The mechanism is v0.2.5’s, below.</li>
+          <li><b>The boot console:</b> light blue and 80 columns from the startup file’s first line — and because Prism now starts as <code>prism&</code>, the boot console stays a <b>live shell</b> after the desktop comes up, not a transcript you can only watch.</li>
+          <li><b>New hardware in the exhibit:</b> the launcher now configures a <b>Multi-Pak Interface</b> — the floppy controller in slot 4, the <b>Orchestra-90 in slot 1</b> — and the <b>Orch-90 demo (<code>orchdemo</code>)</b> is installed in <code>CMDS</code>, ready to run from the Shell Window or by double-clicking it in Prism.</li>
+          <li><b>A correction, per this page’s rule:</b> the v0.2.3 entry below, written while that fix was in verification, names the missing <code>DWSet</code> as the whole cause. The rig’s process table told the deeper story: Prism’s forked shell child <b>died at birth</b>, so no process ever ran on <code>/W5</code> — and <code>DWSet</code> alone, tried in two builds, was not sufficient. The shipped fix forks <code>shell i=/w5</code> — the same way EOU’s own startup starts its window shells — so Shell+ opens and defines its own window.</li>
+        </ul>
+      </article>
+
+      <article class="bulletin" id="v026">
+        <div class="b-meta">
+          <span class="date">3 November 2026</span>
+        </div>
+        <h3><span class="v">v0.2.6</span> — the “Tiles” beauty pass</h3>
+        <p>Keith set the bar in so many words: Prism already feels snappier than GShell, but it must look <b>more beautiful</b> than GShell — <i>“so modern people won’t believe they’re on a Color Computer 3.”</i> The drive icons were the named weakness: nice, but weak-looking. So the evening’s design pass rendered <b>three candidate directions</b> host-side — drawn with Prism’s own primitives, the real SysSmall glyphs and the exact palette bytes — and Keith picked by eye: <b>Direction C, “Tiles.”</b></p>
+        <ul>
+          <li><b>Tiles:</b> each drive is now a modern app-icon badge — a 48×28 paper tile with an ink keyline and stepped 3-2-1 stair corners. Hard disks carry a <b>platter glyph</b> with an amber tone-arm; <code>/D0</code> carries the classic <b>floppy glyph</b> — ink body, paper shutter and label, an amber label rule. <code>/DD</code> and <code>/H1</code> share the platter; the labels differentiate, as before. Art box 44×26 → 48×28, icon pitch 54 → 56.</li>
+          <li><b>The whole family, one language:</b> the directory glyphs were restyled to match — a paper plaque with an ink frame, an <b>amber folder</b> with an ink tab tick, a file page with three ink rules (v0.2.4’s amber header band retired), and the program page keeping its bold amber play-triangle. The v0.2.4 grid contract is untouched, so icon and name still cannot drift apart.</li>
+          <li><b>The trash can, second try:</b> the design sheet’s first transfer — a lid bar over a solid block — read as the letter T, and the sheet said so. The shipped can is an actual can inside the framed plaque: a handle nub, a lid that overhangs the body, ribbed walls. It was prototyped in the simulator before any C was written.</li>
+          <li><b>Both themes survive:</b> under Classic Mono the tiles, labels and selection render in the mono registers with every shape unchanged; the amber selection backing still fills the cell, and the tile’s clipped corners show as ground notches against it — exactly as mocked, and kept.</li>
+          <li><b>Verification (rig, four boots):</b> the desktop in SysSmall with the tiles up; <code>/DD</code> opened with every folder glyph square on its name; the Mono round-trip and back; the Shell Window CLEAR cycle; a <code>prism&</code> boot with a live console; and the Demo Program’s screen itself captured this time, returning cleanly. Build: <code>dist/prism</code> 18,056 bytes, md5 <code>bae9df1e…</code></li>
+        </ul>
+        <p>One harness lesson, logged because it cost a boot: the test director’s scheduler is not a scheduler — a stage re-runs every frame with whatever values that frame carries, so click targets read from files silently reverted to their defaults mid-sequence. The fix (<code>director-v026.lua</code>) reads the target once and holds it. The guest was never at fault.</p>
+      </article>
+
+      <article class="bulletin" id="v025">
+        <div class="b-meta">
+          <span class="date">3 November 2026</span>
+        </div>
+        <h3><span class="v">v0.2.5</span> — the clock tells the truth; the classifier learns</h3>
+        <p>Keith’s request was simple: this emulated machine has no real-time clock, so Prism’s menu-bar clock faithfully displayed whatever date the boot prompt had been fed — April 2014, some days. Have EOU check the desktop’s clock as it boots; minute accuracy is fine. It shipped together with the fix for a classifier bug that had been mislabelling programs since v0.2.</p>
+        <ul>
+          <li><b>Boot clock sync:</b> before MAME starts, the launcher writes the host’s date and time into a file named <code>HOSTTIME</code> on the <code>/H1</code> image (Toolshed, host-side); the startup file then runs <code>setime&lt;/H1/HOSTTIME</code> in place of the old interactive <code>setime</code>. The file format — one line, <code>yyyy/mm/dd hh:mm:ss</code>, CR-terminated, no LF — was discovered in-guest: <code>setime</code> prints that format as its own prompt header and reads exactly one line in it, so fed from a file it needs no interaction and no helper utility. The guest trails the host by roughly 45–55 seconds, which is the stamp-to-boot latency. Proven on two consecutive boots: <code>date -t</code> answered “November 03, 2026 19:02:05” with the host inside the same minute, and Prism’s own clock read 18:48 at host 18:48.</li>
+          <li><b>The classifier — the root cause was deeper than the bug:</b> since v0.2, everything in <code>/DD/CMDS</code> wore a folder icon, and double-clicking a program tried to open it as a directory. The first fix — read the file descriptor’s attribute byte via <code>SS_FD</code>, the documented route — <b>failed in the rig</b>: directories showed as files. A purpose-built probe (<code>fdprobe</code>) found out why: on this system, RBF’s <code>SS_FD</code> handler <b>never fills the caller’s buffer</b>. It returns with the buffer untouched, for files and directories alike — so any classification built on it reads garbage.</li>
+          <li><b>The test that actually works</b> (the same probe, 9 paths out of 9): a path is a directory if and only if opening it with mode <code>0x81</code> succeeds; regular files refuse that open and open with mode 1 instead. The shipped classifier does exactly that, then reads a non-directory’s first two bytes and marks it a program only if they are the OS-9 module sync bytes <code>$87 $CD</code>. No <code>SS_FD</code> call remains in <code>read_dir</code>.</li>
+          <li><b>Verified end to end:</b> the real directories in <code>/DD</code> (APPS, AWK_SAMPLE, BBS, BOOTS, CAL, CMDS, DATA) wear folder icons; data files wear the file icon and answer “That file is not a program” when double-clicked; copies of a CMDS program wear the program icon, and double-clicking one launched it on <code>/W4</code> — Prism reported “Program finished”. One known cosmetic: <code>OS9Boot</code> starts with the sync bytes (it is a module container), so it wears the program icon although its descriptor carries no execute bits. Noted, accepted.</li>
+          <li><b>Regression gate:</b> the Shell Window CLEAR cycle, the Demo Program, the v0.2.4 alignment geometry and the <code>prism&</code> live-console boot all re-pass on the final binary. Build: <code>dist/prism</code> 17,497 bytes, md5 <code>efcbc1d7…</code> — rig only at this point; the exhibit install is the combined update at the top of this page.</li>
+        </ul>
+      </article>
+
+      <article class="bulletin" id="v024">
+        <div class="b-meta">
+          <span class="date">3 November 2026</span>
+        </div>
+        <h3><span class="v">v0.2.4</span> — the polish bundle: SysSmall, straight rows, a blue console</h3>
+        <p>Five fixes that had been queuing behind the Shell Window, shipped as one polish build. The first is the verdict trailed at the end of the v0.2.3 entry: Keith judged the font comparison sheet — four candidates rendered from the real glyph data — and picked <b>SysSmall</b>.</p>
+        <ul>
+          <li><b>SysSmall is the default font</b> (EOU’s 200/39, from <code>SYS/smallfont.27</code>). A probe found the buffer is <b>resident after boot</b> — the startup file’s font-merge line loads it — so Prism’s own load-if-needed path is belt and braces. The View menu offers SysSmall, Prism Sans and Narrow, switching live. The wider 8-px cell forced a layout audit: desktop icon labels are now pixel-centred (they were hardcoded to text column 99 — off-screen at 80 columns), the clock bar widened, and status text is capped at 62 characters.</li>
+          <li><b>Directory alignment, rebuilt after a live rejection:</b> the first design went to the rig while Keith watched, and he rejected it on sight — he was right. The true root cause: text is placed on the 8-px character grid while icons are placed in pixels, so at the old row height the name-to-icon offset drifted by up to a full cell, differently on every row. The rebuild makes the row <b>16 px — a multiple of 8</b> — so the name’s cell and the icon art share one centre line on every row, and a snap on drag-release keeps the window locked to that grid for good. The file icon was redrawn for contrast in the same pass (the white page had washed out on the white window): an amber header band and ink rules; the program icon is a bold amber play-triangle. Verified row by row in <code>/DD</code> and <code>/DD/CMDS</code>: every icon squarely paired with its name.</li>
+          <li><b><code>prism&</code>:</b> the startup now forks Prism with EOU’s trailing ampersand, so the boot console (<code>/term</code>) stays a live shell after the desktop appears — <code>date</code> answered at its prompt. (A leading-ampersand form was tried first; under the boot shell it silently does nothing.)</li>
+          <li><b>The boot console turns light blue:</b> the startup file’s first line sets palette register 1 to light azure (<code>0x1D</code>). The change is retroactive — once the line runs, the <i>entire</i> <code>/term</code> console is blue, including the kernel lines printed before it. The NitrOS-9 splash box and the brief green phase before the startup file runs can never be blue, and <code>/W1</code> and <code>/W2</code> keep their green: the change is <code>/term</code>-scoped.</li>
+          <li><b>WIDTH 80 before DOS</b> in the launcher’s autoboot string; the 80-column boot is screenshot-proven. Honest footnote: several apparent boot “hangs” during this session were the test harness, not the guest — the rig’s Lua director ignores its gate files for roughly its first two minutes after launch, so boot commands typed inside that window collapsed and DOS was never issued.</li>
+          <li><b>Regression gate:</b> the Shell Window (live <code>/W5</code>, a command answered, the full CLEAR cycle) and the Demo Program (“Program finished”) re-pass on the final binary. Build: <code>dist/prism</code> 17,477 bytes, md5 <code>73dc8dca…</code> — installed in the test rig only; the exhibit install is the single combined step at the top of this page.</li>
+        </ul>
+      </article>
+
       <article class="bulletin" id="v023">
         <div class="b-meta">
           <span class="date">3 November 2026</span>
-          <span class="latest">Latest</span>
-          <span class="status">In verification</span>
         </div>
         <h3><span class="v">v0.2.3</span> — the Shell Window gets a real window</h3>
         <p>Found the honest way — at Keith’s desk, using the exhibit like a user. <b>Special → Shell Window</b> reported “Shell window open on /W5”, and the shell really had started… but pressing CLEAR to cycle to it never arrived. The shell was running on a window that, as far as the display was concerned, did not exist.</p>
@@ -200,7 +260,7 @@
           <li><b>Shell Window fix:</b> on opening <code>/W5</code>, Prism now writes the full <code>DWSet</code> definition first — screen type 7, origin 0,0, 80×25, foreground 2, background 1, border 2 (the same parameters <code>pdemo</code> uses) — and only then forks the shell.</li>
           <li><b>Launch window, same treatment:</b> the program-launch window <code>/W4</code> is now defined at open too, so a launched program’s output — or its error message — can never again run invisibly on an undefined window.</li>
           <li><b>Plainer words:</b> the status line now reads “Shell window open on /W5 — press CLEAR (Home) to visit it.”</li>
-          <li><b>Status, stated plainly:</b> built and <b>in verification on the test rig</b> as this entry is written. It joins the exhibit build once the rig proof passes; until then the exhibit still runs v0.2.2.</li>
+          <li><b>Status, stated plainly:</b> rig-verified the same day — the full CLEAR cycle lands on a live <code>/W5</code> shell and <code>date</code> answered, with the Demo Program regression passing — and installed into the live exhibit on the night of 3 November 2026 as part of the combined update at the top of this page. One detail of the root-cause account above did not survive verification; the correction is in that combined entry, where this page’s rules put it.</li>
         </ul>
         <p>Also on the bench today: Keith judged that Prism Sans’ characters still don’t sit in proportion to each other, so a <b>font comparison sheet</b> was rendered from the real glyph data of four candidates — Prism Sans, EOU Narrow, EOU Standard / CocoGIME (8×8), and SysSmall — for a pick-by-eye verdict; the winner becomes the default in the polish update. And the <b>directory-window icon alignment</b> complaint was traced in the drawing code: rows are 11 px tall but the folder and file icons are drawn 14–16 px, on three different vertical anchors (folder at the row top, file 2 px above it, text 1 px below), so icons overflow their rows and drift against the names. The fix — icons redrawn to fit the row, one shared centre line — is queued in the same polish update.</p>
       </article>
