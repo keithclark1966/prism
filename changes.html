@@ -160,7 +160,7 @@
   <div class="wrap site-inner">
     <a class="brand" href="index.html" aria-label="Prism home">
       <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#35b6c9" stroke-width="2.5"/><path d="M16 4 L16 26 L4 26 Z" fill="#f2a81d" opacity="0.85"/></svg>
-      PRISM <span class="ver">v0.2</span>
+      PRISM <span class="ver">v0.2.6</span>
     </a>
     <nav class="main">
       <a href="index.html#story">Story</a>
@@ -199,6 +199,7 @@
           <li><b>The boot console:</b> light blue and 80 columns from the startup file’s first line — and because Prism now starts as <code>prism&</code>, the boot console stays a <b>live shell</b> after the desktop comes up, not a transcript you can only watch.</li>
           <li><b>New hardware in the exhibit:</b> the launcher now configures a <b>Multi-Pak Interface</b> — the floppy controller in slot 4, the <b>Orchestra-90 in slot 1</b> — and the <b>Orch-90 demo (<code>orchdemo</code>)</b> is installed in <code>CMDS</code>, ready to run from the Shell Window or by double-clicking it in Prism.</li>
           <li><b>A correction, per this page’s rule:</b> the v0.2.3 entry below, written while that fix was in verification, names the missing <code>DWSet</code> as the whole cause. The rig’s process table told the deeper story: Prism’s forked shell child <b>died at birth</b>, so no process ever ran on <code>/W5</code> — and <code>DWSet</code> alone, tried in two builds, was not sufficient. The shipped fix forks <code>shell i=/w5</code> — the same way EOU’s own startup starts its window shells — so Shell+ opens and defines its own window.</li>
+          <li><b>A second correction (6 November 2026):</b> the Orch-90 demo line above was too confident. <code>orchdemo</code> is indeed installed — but in live testing at the desk its playback failed: the songs ran at the wrong speed and the keys went unanswered. It is on the bench being rebuilt around a tick-clock player, and until a fixed build is verified by ear, the demo stands as <b>installed but not yet working</b>.</li>
         </ul>
       </article>
 
@@ -207,7 +208,7 @@
           <span class="date">3 November 2026</span>
         </div>
         <h3><span class="v">v0.2.6</span> — the “Tiles” beauty pass</h3>
-        <p>Keith set the bar in so many words: Prism already feels snappier than GShell, but it must look <b>more beautiful</b> than GShell — <i>“so modern people won’t believe they’re on a Color Computer 3.”</i> The drive icons were the named weakness: nice, but weak-looking. So the evening’s design pass rendered <b>three candidate directions</b> host-side — drawn with Prism’s own primitives, the real SysSmall glyphs and the exact palette bytes — and Keith picked by eye: <b>Direction C, “Tiles.”</b></p>
+        <p>Keith set the bar in so many words: Prism must look <b>so modern people won’t believe they’re on a Color Computer 3</b>. The drive icons were the named weakness: nice, but weak-looking. So the evening’s design pass rendered <b>three candidate directions</b> host-side — drawn with Prism’s own primitives, the real SysSmall glyphs and the exact palette bytes — and Keith picked by eye: <b>Direction C, “Tiles.”</b></p>
         <ul>
           <li><b>Tiles:</b> each drive is now a modern app-icon badge — a 48×28 paper tile with an ink keyline and stepped 3-2-1 stair corners. Hard disks carry a <b>platter glyph</b> with an amber tone-arm; <code>/D0</code> carries the classic <b>floppy glyph</b> — ink body, paper shutter and label, an amber label rule. <code>/DD</code> and <code>/H1</code> share the platter; the labels differentiate, as before. Art box 44×26 → 48×28, icon pitch 54 → 56.</li>
           <li><b>The whole family, one language:</b> the directory glyphs were restyled to match — a paper plaque with an ink frame, an <b>amber folder</b> with an ink tab tick, a file page with three ink rules (v0.2.4’s amber header band retired), and the program page keeping its bold amber play-triangle. The v0.2.4 grid contract is untouched, so icon and name still cannot drift apart.</li>
@@ -346,7 +347,7 @@
           <span class="date">1 November 2026</span>
         </div>
         <h3>The project begins</h3>
-        <p>Keith Clark of Rodney, Ontario commissions a Finder-style graphical shell for the TRS-80 Color Computer 3 — written <b>from scratch</b>, in the open, as a <b>free gift to the CoCo community</b>, after putting the CoCo’s stock shell beside the polished graphical desktops of its era and deciding the hardware deserved better. The direction: Muse has total development control; Keith approves the overall look and shine. The finish test for every screen, set on day one of the polish work: <i>“Would this look at home next to the GS/OS Finder?”</i></p>
+        <p>Keith Clark of Rodney, Ontario commissions a Finder-style graphical shell for the TRS-80 Color Computer 3 — written <b>from scratch</b>, in the open, as a <b>free gift to the CoCo community</b>, after admiring the polished graphical desktops of the CoCo’s era and deciding its hardware could wear one just as well. The direction: Muse has total development control; Keith approves the overall look and shine. The finish test for every screen, set on day one of the polish work: <i>“Would this look at home next to the GS/OS Finder?”</i></p>
         <p>The project is called <b>Prism</b>. Its source is published under the MIT licence, and this site is its home.</p>
       </article>
 
@@ -359,7 +360,7 @@
     <div class="how">
       <h3><span class="dot t"></span>Kept from the build records, in the open</h3>
       <p>This page is written from Prism’s own build log and design notes — the same records the work itself is done from. Entries are <b>dated, kept in order, and not quietly rewritten</b>; if an entry ever needs correcting, the correction gets its own entry. Statuses are stated as they are: if a build is in verification, the entry says so.</p>
-      <p><b>How Prism is built:</b> C written for <b>CMOC</b> (0.1.86), with all OS-9 system calls behind a thin wrapper library, <code>os9sys</code> — the project’s only assembly — assembled and linked with <b>LWTools</b> 4.21 and imaged with <b>Toolshed</b> 2.6.1. Development and verification run on a MAME <code>coco3h</code> rig (2 MB, HD6309) that drives the real menus and takes real screenshots; nothing is called done from a log line alone. Questions and discussion live on the project’s <b>GitHub Discussions</b>.</p>
+      <p><b>How Prism is built:</b> C written for <b>CMOC</b> (0.1.86), with all OS-9 system calls behind a thin wrapper library, <code>os9sys</code> — the project’s only assembly — assembled and linked with <b>LWTools</b> 4.21 and imaged with <b>Toolshed</b> 2.6.1. Development and verification run on a MAME <code>coco3h</code> rig (2 MB, HD6309) that drives the real menus and takes real screenshots; nothing is called done from a log line alone. Questions and discussion are welcome — on <a href="https://github.com/keithclark1966/prism">GitHub</a>, or by email at <a href="mailto:keithclark1966@gmail.com">keithclark1966@gmail.com</a>.</p>
     </div>
   </section>
 
@@ -371,7 +372,7 @@
     <p class="credit">Prism is a gift to the CoCo community from <b>Keith Clark</b> of Rodney, Ontario — designed and built with <b>Muse</b>.</p>
     <div class="fine">
       <p>Prism is an original work. It is functionally inspired by the classic graphical desktops of the 1980s, and is not affiliated with, endorsed by, or connected to Apple Inc. or Tandy / Radio Shack.</p>
-      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current development build (v0.2) captured in MAME.</p>
+      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current build (v0.2.6), captured in MAME on 6 November 2026.</p>
     </div>
   </div>
 </footer>

@@ -7,12 +7,9 @@
 <meta name="description" content="The official noticeboard for Prism, a Finder-style graphical desktop shell for the TRS-80 Color Computer 3: dated project bulletins, newest first.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 L28 26 L4 26 Z' fill='none' stroke='%2335b6c9' stroke-width='2.5'/%3E%3Cpath d='M16 4 L16 26 L4 26 Z' fill='%23f2a81d' opacity='0.85'/%3E%3C/svg%3E">
 <!--
-  PRISM — bulletin board (preview build, not yet published)
-  Future links, to be wired up when the project goes public:
-    GitHub repository  : https://github.com/PLACEHOLDER/prism-coco3   (placeholder — does not exist yet)
-    Releases           : https://github.com/PLACEHOLDER/prism-coco3/releases   (placeholder — does not exist yet)
-    GitHub Discussions : https://github.com/PLACEHOLDER/prism-coco3/discussions   (placeholder — does not exist yet)
-  Do not turn these into live links until the repository is real.
+  PRISM — bulletin board (published 2026-11-05; refreshed 2026-11-06)
+  GitHub repository  : https://github.com/keithclark1966/prism
+  Releases           : https://github.com/keithclark1966/prism/releases
 -->
 <style>
   :root{
@@ -152,7 +149,7 @@
   <div class="wrap site-inner">
     <a class="brand" href="index.html" aria-label="Prism home">
       <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#35b6c9" stroke-width="2.5"/><path d="M16 4 L16 26 L4 26 Z" fill="#f2a81d" opacity="0.85"/></svg>
-      PRISM <span class="ver">v0.2</span>
+      PRISM <span class="ver">v0.2.6</span>
     </a>
     <nav class="main">
       <a href="index.html#story">Story</a>
@@ -179,10 +176,20 @@
   <section class="block wrap" aria-label="Project bulletins">
     <div class="board">
 
+      <article class="bulletin" id="show">
+        <div class="b-meta">
+          <span class="date">6 November 2026</span>
+          <span class="latest">Latest</span>
+        </div>
+        <h3>Curtis Boyle says yes — and tomorrow, the CoCo show</h3>
+        <p>Two answers arrived today from <b>Curtis Boyle</b>, who maintains the EOU distribution Prism runs on. Asked whether the portable Prism package may <b>bundle EOU itself</b>, his answer was: <b>“That is fine!”</b> And the planned submission of Prism to the <a href="https://colorcomputerarchive.com/">Color Computer Archive</a>: <b>“Not a problem at all.”</b> Both doors are open — thank you, Curtis.</p>
+        <p>Curtis has also offered to <b>present these project pages as a preview on tomorrow's CoCo show</b> — The CoCo Nation / CoCoTALK, <b>Saturday, 7 November</b> — and to invite viewers who would like to <b>help test Prism</b> to get in touch with him there. If you're watching: testers are genuinely wanted. And you can always reach us directly — suggestions, change requests and criticism are all welcome at <a href="mailto:keithclark1966@gmail.com">keithclark1966@gmail.com</a>.</p>
+        <p>For the record, so nobody has to guess: the build pictured across this site is <b>v0.2.6</b>, the current exhibit build, with fresh screenshots taken today. The downloadable release remains <b>v0.2.1 with its boot package</b>, on the <a href="https://github.com/keithclark1966/prism/releases">GitHub releases page</a>; a newer public release follows when the current polish pass is installed and verified.</p>
+      </article>
+
       <article class="bulletin" id="librarian">
         <div class="b-meta">
           <span class="date">4 November 2026</span>
-          <span class="latest">Latest</span>
         </div>
         <h3>The library arrives — and the goal gets its name</h3>
         <p>Keith has named what this project is building: <b>“a complete CoCo 3 with all available software and our own programs.”</b> Prism is the face of that machine — and today, its library came home.</p>
@@ -232,7 +239,7 @@
           <span class="date">1 November 2026</span>
         </div>
         <h3>A desktop for the CoCo 3 — the project begins</h3>
-        <p>Keith Clark of Rodney, Ontario commissions a Finder-style graphical shell for the TRS-80 Color Computer 3 — written <b>from scratch</b>, in the open, as a <b>free gift to the CoCo community</b>. The brief came from putting the CoCo’s stock shell beside the polished graphical desktops of its era and deciding the hardware deserved better.</p>
+        <p>Keith Clark of Rodney, Ontario commissions a Finder-style graphical shell for the TRS-80 Color Computer 3 — written <b>from scratch</b>, in the open, as a <b>free gift to the CoCo community</b>. The brief came from the polished graphical desktops of the CoCo's era — and the conviction that its hardware could wear one just as well.</p>
         <p>The project is called <b>Prism</b>. Its source will be published under the MIT licence when the first release ships, and this site is its home. Welcome — mind the pins.</p>
       </article>
 
@@ -245,7 +252,7 @@
     <div class="how">
       <h3><span class="dot a"></span>The official record, kept in the open</h3>
       <p>Bulletins are posted here by Prism’s maintainers when something ships, changes, or is worth reporting — releases, fixes, and honest setbacks alike. Entries are <b>dated, kept in order, and not quietly rewritten</b>; if a bulletin ever needs correcting, the correction gets its own pin.</p>
-      <p>Questions, bug reports and discussion don’t live on this page — they will live on the project’s <b>GitHub Discussions</b>, once the repository is public. Until then, consider the board read-only: check back when a new pin appears.</p>
+      <p>Questions, bug reports and suggestions don’t live on this page — the project lives on <a href="https://github.com/keithclark1966/prism">GitHub</a>, and email reaches us directly: <a href="mailto:keithclark1966@gmail.com">keithclark1966@gmail.com</a>. Suggestions, change requests and criticism are all welcome — negative or positive, we don't mind.</p>
     </div>
   </section>
 
@@ -257,7 +264,7 @@
     <p class="credit">Prism is a gift to the CoCo community from <b>Keith Clark</b> of Rodney, Ontario — designed and built with <b>Muse</b>.</p>
     <div class="fine">
       <p>Prism is an original work. It is functionally inspired by the classic graphical desktops of the 1980s, and is not affiliated with, endorsed by, or connected to Apple Inc. or Tandy / Radio Shack.</p>
-      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current development build (v0.2) captured in MAME.</p>
+      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current build (v0.2.6), captured in MAME on 6 November 2026.</p>
     </div>
   </div>
 </footer>

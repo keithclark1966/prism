@@ -7,11 +7,11 @@
 <meta name="description" content="Prism is a Finder-style graphical desktop shell for the TRS-80 Color Computer 3, running on NitrOS-9. An original work, and a gift to the CoCo community.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4 L28 26 L4 26 Z' fill='none' stroke='%2335b6c9' stroke-width='2.5'/%3E%3Cpath d='M16 4 L16 26 L4 26 Z' fill='%23f2a81d' opacity='0.85'/%3E%3C/svg%3E">
 <!--
-  PRISM — project homepage (preview build, not yet published)
-  Future links, to be wired up when the project goes public:
-    GitHub repository : https://github.com/PLACEHOLDER/prism-coco3   (placeholder — does not exist yet)
-    Releases          : https://github.com/PLACEHOLDER/prism-coco3/releases   (placeholder — does not exist yet)
-  Do not turn these into live links until the repository is real.
+  PRISM — project homepage (published 2026-11-05; refreshed 2026-11-06)
+  GitHub repository : https://github.com/keithclark1966/prism
+  Releases          : https://github.com/keithclark1966/prism/releases
+  Current build pictured on this page: v0.2.6 (the exhibit build).
+  Public downloadable release: v0.2.1 + boot package (published 2026-11-05).
 -->
 <style>
   :root{
@@ -192,7 +192,7 @@
   <div class="wrap site-inner">
     <a class="brand" href="#top" aria-label="Prism home">
       <svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#35b6c9" stroke-width="2.5"/><path d="M16 4 L16 26 L4 26 Z" fill="#f2a81d" opacity="0.85"/></svg>
-      PRISM <span class="ver">v0.2</span>
+      PRISM <span class="ver">v0.2.6</span>
     </a>
     <nav class="main">
       <a href="#story">Story</a>
@@ -222,10 +222,10 @@
       <span>Free — a community gift</span>
     </div>
     <figure class="screen">
-      <img src="assets/prism-desktop.png" alt="The Prism desktop: a menu bar reading Prism, File, View, Special across the top with a clock at the right, three drawn drive icons down the right side of a solid blue desktop, a Prism launcher button at bottom left, and the mouse pointer.">
+      <img src="assets/prism-desktop.png" alt="The Prism desktop: a menu bar reading Prism, File, View, Special across the top with a clock at the right, three badge-style drive tiles down the right side of a solid blue desktop — disc platters for /DD and /H1, a floppy for /D0 — a Prism launcher button at bottom left, a trash can at bottom right, and a status line reading “Prism 0.2.6”.">
       <figcaption>
         <span>The Prism desktop — 640 × 200 on the CoCo 3’s GIME graphics</span>
-        <span class="tag">In development · v0.2</span>
+        <span class="tag">Current build · v0.2.6</span>
       </figcaption>
     </figure>
   </div>
@@ -236,7 +236,7 @@
     <p class="lede">Prism is a graphical desktop for a machine that shipped in 1986 with a command line. It gives the Color Computer 3 the kind of interface its hardware was always capable of: a <strong>menu bar</strong>, <strong>icons for your drives</strong>, <strong>windows that open onto real directories</strong>, and a <strong>mouse pointer</strong> to drive it all.</p>
     <div class="cols">
       <div>
-        <p>It began with a simple comparison. Put the CoCo 3’s stock shell beside the polished graphical desktops of its era and the gap is obvious — not in the hardware, which has real graphics modes, a 64-colour palette and a proper multitasking operating system in NitrOS-9, but in the shell nobody ever wrote for it. <strong>Prism is that shell.</strong></p>
+        <p>It began with an admiration. The polished graphical desktops of the CoCo 3’s era showed what a friendly machine could feel like — and the CoCo 3 had the hardware for that kind of interface all along: real graphics modes, a 64-colour palette and a proper multitasking operating system in NitrOS-9. What it never got was a desktop shell written in that spirit, for its own screen. <strong>Prism is that shell.</strong></p>
         <p>It is written from scratch in C, cross-compiled with modern tools and built directly against the NitrOS-9 windowing system, so it runs as a native OS-9 program — on top of the EOU (Ease of Use) distribution today, and on a real CoCo 3 as faithfully as in an emulator.</p>
       </div>
       <div>
@@ -244,7 +244,7 @@
         <p>So it is being built the way community software should be: in the open, with original code, honest screenshots, and a release anyone can boot. When it is ready, it will simply be given away.</p>
       </div>
     </div>
-    <p class="pull">“The graphical environment is way better than the gshell in OS-9! <em>This what I want for the CoCo.</em>” — Keith, on seeing the GS/OS Finder — the brief Prism was built to</p>
+    <p class="pull">“So modern and pretty, <em>people won't believe they're on a Color Computer 3.</em>” — Keith, setting Prism's design bar — the brief the current build was polished to</p>
     <p class="pull">“We're going to use every capability of this little baby.” — Keith, setting Prism’s design rule: the whole machine, all of it, all the time</p>
   </section>
 
@@ -255,7 +255,7 @@
     <p class="pull">“A complete CoCo 3 with all available software and our own programs.” — Keith, naming the project's goal, 4 November 2026</p>
     <div class="cols">
       <div>
-        <p>Prism does not stand alone. Its sibling programs are being written as <strong>one suite</strong>: the <strong>System Monitor</strong>, which watches the machine's processes, memory and drives; the <strong>Orchestra-90 music player</strong>, four stereo voices through the Multi-Pak; and the <strong>PSG sound work</strong> alongside them. Different programs, one family — the machine's own software, made here.</p>
+        <p>Prism does not stand alone. Its sibling programs are being written as <strong>one suite</strong>: the <strong>System Monitor</strong>, which watches the machine's processes, memory and drives (installed and running in the exhibit); the <strong>Orchestra-90 music player</strong> — four stereo voices through the Multi-Pak — which is built and on the test bench, its playback being perfected before it is called done; and the <strong>PSG sound test</strong>, three voices through the Multi-Pak's sound chip, played and verified by ear. Different programs, one family — the machine's own software, made here.</p>
       </div>
       <div>
         <p>The next major piece is the <strong>Librarian</strong>: a Prism program to <strong>browse, search and launch the whole collection</strong> from inside the desktop. The library it indexes is the <a href="https://colorcomputerarchive.com/">Color Computer Archive</a>'s — the community's preservation work, credited as theirs. A local copy of their SDC card image is <strong>in hand and verified</strong> (4 November 2026: 5,367 files, 5,282 disk images); the index is what we build. <strong>Status: in design — library in hand, index next.</strong></p>
@@ -279,16 +279,17 @@
   <!-- ============ FEATURES ============ -->
   <section class="block wrap" id="features">
     <div class="sec-head"><span class="sec-num">03</span><h2>Features</h2></div>
-    <p class="lede" style="margin-bottom:34px">Prism is under active development. This list is kept honest: what you can use <strong>today</strong>, in the verified v0.2 build — and what is on the bench right now.</p>
+    <p class="lede" style="margin-bottom:34px">Prism is under active development. This list is kept honest: what you can use <strong>today</strong>, in the current v0.2.6 build — and what is on the bench right now.</p>
     <div class="feat-grid">
       <div class="feat working">
         <h3><span class="dot t"></span>Working today</h3>
-        <p class="sub">Verified in v0.2</p>
+        <p class="sub">Verified in v0.2.6</p>
         <ul>
           <li><b>Menu bar</b> — Prism, File, View and Special menus, with pull-downs</li>
-          <li><b>Desktop drive icons</b> — /DD, /H1 and /D0 down the right of the screen, drawn as the hardware they are: hard-drive units, and a floppy for /D0</li>
+          <li><b>Desktop drive icons</b> — /DD, /H1 and /D0 down the right of the screen as modern badge-style tiles: disc platters for the hard drives, a floppy for /D0, in the current build's “Tiles” artwork</li>
           <li><b>Double-click opening</b> — double-click a drive icon and its window opens</li>
-          <li><b>Directory windows</b> — open a drive and browse its real contents, with close box and drop shadow</li>
+          <li><b>Directory windows</b> — open a drive and browse its real contents, with close box, scroll arrows and drop shadow</li>
+          <li><b>One-action Shut Down</b> — a single pick ends the session and closes the machine down cleanly</li>
           <li><b>Draggable windows</b> — pick a window up by its title bar and put it where you want it</li>
           <li><b>Program launching</b> — run programs from a window instead of typing paths</li>
           <li><b>The Prism button</b> — a Start-style launcher, bottom-left, for programs, drives and settings</li>
@@ -316,22 +317,38 @@
   <!-- ============ SCREENSHOTS ============ -->
   <section class="block wrap" id="screenshots">
     <div class="sec-head"><span class="sec-num">04</span><h2>Screenshots</h2></div>
-    <p class="lede" style="margin-bottom:34px">Real screens from the running program, captured from the emulator — no mock-ups. These are <strong>current shots (v0.2)</strong>: Prism’s own CoCo identity, with drawn hardware icons, flat colour and the smaller interface font.</p>
+    <p class="lede" style="margin-bottom:34px">Real screens from the running program, captured from the emulator — no mock-ups. These are <strong>current shots (v0.2.6, 6 November 2026)</strong>: the “Tiles” build, with badge-style drive icons, flat colour and the smaller interface font.</p>
     <div class="gal">
       <figure>
-        <img src="assets/prism-directory.png" alt="A Prism directory window open on the /DD drive, its amber title bar and drop shadow over the blue desktop, listing real folders — APPS, BBS, BOOTS, CMDS, DEFS and more — with an item count along the bottom.">
+        <img src="assets/prism-directory.png" alt="A Prism directory window open on the /DD drive, its amber title bar and drop shadow over the blue desktop, listing real folders — APPS, AWK_SAMPLE, BBS, BOOTS, CAL, CMDS, DATA — with “items: 41” along the bottom, and the /DD tile lit amber at the right.">
         <figcaption>
-          <span class="vtag">v0.2</span>
+          <span class="vtag">v0.2.6</span>
           <b>A directory window on /DD</b>
           <span>The EOU system drive’s real contents — opened with a double-click, in a window you can drag by its amber title bar.</span>
         </figcaption>
       </figure>
       <figure>
-        <img src="assets/prism-mono.png" alt="The Prism desktop in the Classic Mono theme: a grey desktop, white menu bar with a clock at the right, and three drive icons in black and white.">
+        <img src="assets/prism-special.png" alt="The Prism Special menu pulled down over the /DD directory window, showing two entries: Shell Window and Demo Program. The mouse pointer sits on the Special title in the menu bar.">
         <figcaption>
-          <span class="vtag">v0.2</span>
-          <b>Classic Mono theme</b>
-          <span>The monochrome look, for the classic feel — one pick from the View menu, applied live.</span>
+          <span class="vtag">v0.2.6</span>
+          <b>The Special menu</b>
+          <span>Prism’s program shelf: a shell window on Prism’s own screen, and the Demo Program — over the open /DD window.</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="assets/prism-view.png" alt="The Prism View menu pulled down: Colour Theme, Classic Mono, then the font choices — SysSmall Font, Prism Font, Narrow Font — and Redraw Desktop.">
+        <figcaption>
+          <span class="vtag">v0.2.6</span>
+          <b>The View menu</b>
+          <span>Two themes — the colour look, or Classic Mono — three interface fonts, and a desktop redraw, all switchable live.</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="assets/prism-desktop.png" alt="The Prism desktop in the colour theme: solid blue desktop, white menu bar with a clock, three badge-style drive tiles — disc platters for /DD and /H1, a floppy for /D0 — the Prism button at bottom left and the status line reading “Prism 0.2.6 — double-click a drive to open it”.">
+        <figcaption>
+          <span class="vtag">v0.2.6</span>
+          <b>The colour theme</b>
+          <span>Solid blue ground, white paper, black ink, amber accents — flat colours, badge-style tiles, and a status line that tells you what to do next.</span>
         </figcaption>
       </figure>
       <figure>
@@ -340,14 +357,6 @@
           <span class="vtag">The platform</span>
           <b>NitrOS-9 EOU, underneath</b>
           <span>Prism runs on the EOU distribution of NitrOS-9 — a complete, modern OS-9 system for the CoCo 3.</span>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="assets/prism-desktop.png" alt="The Prism desktop in the colour theme: solid blue desktop, white menu bar with a clock, three drive icons — hard drives for /DD and /H1, a floppy for /D0 — and the arrow pointer.">
-        <figcaption>
-          <span class="vtag">v0.2</span>
-          <b>The colour theme</b>
-          <span>Solid blue ground, white paper, black ink, amber accents — flat colour now, no dither, with the selected drive lit in amber.</span>
         </figcaption>
       </figure>
     </div>
@@ -385,9 +394,12 @@
   <section class="block wrap" id="download">
     <div class="sec-head"><span class="sec-num">06</span><h2>Download</h2></div>
     <div class="dl">
-      <span class="status">First public release in preparation</span>
-      <h3>Not quite yet — and worth the wait.</h3>
-      <p>The release disk is being prepared alongside the current development pass. When it lands, this page will offer the self-booting Prism disk image and the full source code — free, as promised. No placeholder links, no vapourware: it ships when it boots clean and looks the part.</p>
+      <span class="status">v0.2.1 · First public release — out now</span>
+      <h3>Prism v0.2.1, ready to boot.</h3>
+      <p>The first public release is on GitHub: the <strong>boot package</strong> — a floppy image that installs Prism to your EOU hard drive and boots straight into it, to the design worked out with Curtis Boyle of the EOU project — plus the Prism disk image and the full source code. Free, as promised.</p>
+      <p style="margin-top:14px">The machine pictured on this page already runs the newer <strong>v0.2.6</strong>; a public release of the current build follows once its next polish pass (v0.2.7, in testing now) is installed and verified.</p>
+      <p style="margin-top:18px"><a href="https://github.com/keithclark1966/prism/releases"><b>Download from the GitHub releases page →</b></a></p>
+      <p style="margin-top:22px">Questions, suggestions, a change you'd like to see — or criticism, which is just as welcome: <a href="mailto:keithclark1966@gmail.com">keithclark1966@gmail.com</a></p>
     </div>
   </section>
 
@@ -399,7 +411,8 @@
     <p class="credit">Prism is a gift to the CoCo community from <b>Keith Clark</b> of Rodney, Ontario — designed and built with <b>Muse</b>.</p>
     <div class="fine">
       <p>Prism is an original work. It is functionally inspired by the classic graphical desktops of the 1980s, and is not affiliated with, endorsed by, or connected to Apple Inc. or Tandy / Radio Shack.</p>
-      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current development build (v0.2) captured in MAME.</p>
+      <p>NitrOS-9 and EOU are the work of the NitrOS-9 project community. Screenshots show the current build (v0.2.6), captured in MAME on 6 November 2026.</p>
+      <p>Say hello — suggestions, change requests and criticism are all welcome: <a href="mailto:keithclark1966@gmail.com">keithclark1966@gmail.com</a></p>
     </div>
   </div>
 </footer>
